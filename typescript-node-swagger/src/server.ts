@@ -1,8 +1,11 @@
 import express from "express";
-import { categoriesRoute } from "./routes/categories.route"
+
+import { categoriesRoute } from "./routes/categories.route";
 
 const app = express();
 
-app.get('/categories', categoriesRoute)
+app.use(express.json());
 
-app.listen(3000, () => console.log('listening on port 3000'))
+app.use("/categories", categoriesRoute);
+
+app.listen(3000, () => console.log("listening on port 3000"));

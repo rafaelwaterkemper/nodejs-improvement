@@ -1,21 +1,22 @@
 import { Router, Request, Response } from "express";
-import { randomUUID } from "crypto";
+import { CategoriesRepository } from "../repositories/CategoriesRepository";
+import { CreateCategoryService } from "../services/CreateCategoryService";
 
 const categoriesRoute = Router();
-const categories = [];
+const categoriesRepository = new CategoriesRepository();
 
 categoriesRoute.post("/", (req: Request, res: Response): Response => {
-    const { name, description } = req.body;
+  const { name, description } = req.body;
+  const createCategoryService = new CreateCategoryService(categoriesRepository);
+  createCategoryService.execute({ name, description });
 
-    const category = {
-        id: randomUUID(),
-        name,
-        description
-    }
-
-    categories.push(category);
-
-    return res.status(201).send();
+  return res.status(201).send();
 });
 
-export { categoriesRoute }
+categoriesRoute.get("/", (req: Request, res: Response): Response => {
+  const categories = categoriesRepository.list();
+
+  return res.json(categories);
+});
+
+export { categoriesRoute };
