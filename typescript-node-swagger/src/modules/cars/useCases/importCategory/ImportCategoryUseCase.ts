@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { promises } from "fs";
 import parse from "csv-parser";
 import { ICategoriesRepository } from "../../repositories/ICategoriesRepository";
 import { Category } from "../../model/Category";
@@ -28,7 +28,10 @@ class ImportCategoryUseCase {
           });
           categories.push(category);
         })
-        .on("end", () => resolve(categories))
+        .on("end", () => {
+          promises.unlink(file.path);
+          resolve(categories)
+        })
         .on("error", (err) => reject(err));
     });
   }
